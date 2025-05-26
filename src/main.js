@@ -31,7 +31,6 @@ form.addEventListener('submit', async e => {
   clearGallery();
   hideLoadMoreButton();
   showLoader();
-    await new Promise(resolve => setTimeout(resolve, 1000));
 
   try {
     const data = await getImagesByQuery(query, page);
@@ -43,8 +42,14 @@ form.addEventListener('submit', async e => {
     }
 
     createGallery(data.hits);
-    if (data.totalHits > 15) showLoadMoreButton();
-    if (data.totalHits <= 15) hideLoadMoreButton();
+
+    const shownImages = document.querySelectorAll('.gallery-item').length;
+    if (shownImages < totalHits) {
+      showLoadMoreButton();
+    } else {
+      hideLoadMoreButton();
+      iziToast.info({ message: `You've reached the end of search results.` });
+    }
   } catch (error) {
     iziToast.error({ message: 'An error occurred. Try again later.' });
   } finally {
@@ -53,11 +58,9 @@ form.addEventListener('submit', async e => {
 });
 
 loadMoreBtn.addEventListener('click', async () => {
-    page += 1;
-    loadMoreBtn.classList.toggle('hidden');
-    showLoader();
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    loadMoreBtn.classList.toggle('hidden');
+  page += 1;
+  hideLoadMoreButton();
+  showLoader();
 
   try {
     const data = await getImagesByQuery(query, page);
@@ -66,7 +69,9 @@ loadMoreBtn.addEventListener('click', async () => {
     scrollPage();
 
     const shownImages = document.querySelectorAll('.gallery-item').length;
-    if (shownImages >= totalHits) {
+    if (shownImages < totalHits) {
+      showLoadMoreButton();
+    } else {
       hideLoadMoreButton();
       iziToast.info({
         message: `We're sorry, but you've reached the end of search results.`,
