@@ -68,14 +68,15 @@ loadMoreBtn.addEventListener('click', async () => {
 
     scrollPage();
 
-    const shownImages = document.querySelectorAll('.gallery-item').length;
-    if (shownImages < totalHits) {
-      showLoadMoreButton();
-    } else {
+    const shownImages = document.querySelectorAll('.gallery__item').length;
+
+    if (shownImages >= totalHits) {
       hideLoadMoreButton();
       iziToast.info({
         message: `We're sorry, but you've reached the end of search results.`,
       });
+    } else {
+      showLoadMoreButton();
     }
   } catch (error) {
     iziToast.error({ message: 'Failed to load more images.' });
