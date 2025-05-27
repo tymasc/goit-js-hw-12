@@ -43,7 +43,7 @@ form.addEventListener('submit', async e => {
 
     createGallery(data.hits);
 
-    const shownImages = document.querySelectorAll('.gallery-item').length;
+    const shownImages = document.querySelectorAll('.gallery__item').length;
     if (shownImages < totalHits) {
       showLoadMoreButton();
     } else {
